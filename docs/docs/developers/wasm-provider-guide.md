@@ -221,7 +221,7 @@ pub enum ReadinessProbe {
 
 Probe targets are validated against the host's effective
 `allowed_hosts` list (sourced from the policy sidecar's
-`[network].allowed_hosts`, optionally extended or replaced by the user
+`[network].allowed_hosts`, optionally extended or replaced by the architect
 via `rosec.toml`) using the same glob matching Extism uses. A probe
 whose hostname doesn't match is rejected at evaluation time. This
 prevents a malicious guest from probing arbitrary internal hosts. See
@@ -422,10 +422,10 @@ Offline caching requires **two gates** to be active:
 1. **Guest gate:** The guest declares `Capability::OfflineCache` via its
    `capabilities` export (feature toggle — "I support this").
 2. **Host gate:** The per-provider `offline_cache` config is `true`
-   (default) — the user's toggle ("I want this").
+   (default) — the architect's toggle ("I want this").
 
 Both must be true for the host to call `export_cache`, `restore_cache`, or
-attempt offline unlock.  If the user sets `offline_cache = false` in the
+attempt offline unlock.  If the architect sets `offline_cache = false` in the
 provider's config, caching is disabled regardless of the guest's capability.
 
 ```toml
@@ -588,7 +588,7 @@ is plaintext from the guest's perspective.
 | `last_cache_write` | `Option<SystemTime>`  | When the cache file was last written to disk (None = never). |
 
 The CLI shows `cached` as `"unlocked (cached)"` in `rosec provider list`
-and `rosec status` to alert the user that secrets may be stale.
+and `rosec status` to alert the architect that secrets may be stale.
 
 ## Packaging, signing, and distribution
 

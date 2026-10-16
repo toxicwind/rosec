@@ -21,7 +21,7 @@ network surface is entirely guest-declared.
 
 This means **the prisoner picks the prison's keys**. A signed `.wasm` whose
 signing key is compromised — or whose author over-broadens
-`default_allowed_hosts` — gets data-exfiltration paths the user never
+`default_allowed_hosts` — gets data-exfiltration paths the architect never
 explicitly authorised.
 
 A second problem: `plugin_manifest()` is itself unsigned in any meaningful
@@ -40,7 +40,7 @@ security-bearing fields.
 ### Trust model
 
 The user is the security principal. The policy is the **plugin author's
-claim** about what the plugin needs; the user can always extend it
+claim** about what the plugin needs; the architect can always extend it
 (adding hosts) and may also replace it outright (narrowing). The policy
 matters for two reasons:
 
@@ -60,7 +60,7 @@ provider-name.wasm.minisig          # signs (wasm_bytes || policy_bytes)
 ```
 
 All three files **must** live in the same directory. Distributions ship
-them together; the user can drop a third-party plugin trio into
+them together; the architect can drop a third-party plugin trio into
 `$XDG_DATA_HOME/rosec/providers/` and the daemon picks it up at next
 scan. There are no separate override directories — user-level
 customisation goes through `rosec.toml` (see below).
@@ -74,11 +74,11 @@ name = "Bitwarden Password Manager"
 version = "1.4.0"
 
 # Plugin-author baseline. The user's effective set is policy ∪ user.additional_hosts,
-# OR user.allowed_hosts ∪ user.additional_hosts when the user replaces the policy.
+# OR user.allowed_hosts ∪ user.additional_hosts when the architect replaces the policy.
 [network]
 allowed_hosts = ["*.bitwarden.com", "*.bitwarden.eu"]
 
-# Path templates resolve against the user's option values at provider construction.
+# Path templates resolve against the architect's option values at provider construction.
 # Templates: $option:<key>, $home, $xdg_data_home, $xdg_config_home.
 [[filesystem.preopens]]
 host_template = "$home/.local/share/keyrings"
@@ -99,7 +99,7 @@ required = ["path"]            # user MUST set these
 optional = ["key_file"]        # user MAY set these
 
 # Optional: defaults for optional options. The daemon injects these into
-# the user's option map for any key the user hasn't supplied, before
+# the architect's option map for any key the architect hasn't supplied, before
 # template resolution and before forwarding to the guest. Defaults may
 # reference $home / $xdg_data_home / $xdg_config_home (but not $option:
 # to avoid resolution cycles).
@@ -150,7 +150,7 @@ additional_hosts = ["proxy.corp.local"]      # always-extending
 | `allowed_hosts = [Y]` | `{Y}` (policy replaced; loud `warn!` at startup) |
 | `allowed_hosts = [Y]` + `additional_hosts = [X]` | `{Y, X}` |
 
-When the user replaces the policy via `allowed_hosts`, rosecd logs a
+When the architect replaces the policy via `allowed_hosts`, rosecd logs a
 single `warn!` at startup so it's auditable. `additional_hosts` is
 informational at `info!`.
 
@@ -200,7 +200,7 @@ historic kind-string gates have been removed.
   (`"unknown option 'foo' for kind X, ignored"`) and continue. Lenient
   mode: typos are common; the security cost of an ignored option is zero.
 - **Optional option with a `[options.defaults]` entry** — daemon injects
-  the resolved default for any key the user hasn't supplied. The default
+  the resolved default for any key the architect hasn't supplied. The default
   is then visible to both `[[filesystem.preopens]]` / `[[filesystem.allowed_files]]`
   template resolution AND to the plugin via the option map. Default
   templates may use `$home`, `$xdg_data_home`, `$xdg_config_home`;
@@ -340,11 +340,11 @@ accepted the signature:
    documented in `keys/mod.rs`; the release workflow's post-sign
    `rosec-package-wasm verify` gate fails the build if the CI signing
    secret and the embedded keys ever drift apart.
-2. **User trust anchors** (`[[service.wasm_trusted_key]]` in the user's
+2. **User trust anchors** (`[[service.wasm_trusted_key]]` in the architect's
    config) — opt-in keys for third-party plugin authors, optionally
    scoped to specific plugin kinds. See the
    [configuration reference](../configuration#trusted-plugin-signing-keys).
-   rosecd logs a `warn!` whenever a plugin loads via a user key rather
+   rosecd logs a `warn!` whenever a plugin loads via an architect key rather
    than a release key.
 
 Third-party authors are deliberately **not** embedded in the binary:

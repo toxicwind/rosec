@@ -472,7 +472,7 @@ registration all work unchanged.
 - **Logind watcher:** skipped in private socket mode — no system bus is
   available.  Lock-on-sleep would rely on idle timeouts instead.
 - **Permissions:** the socket file is created with mode `0o600` and placed under
-  the user's `XDG_RUNTIME_DIR` (which is itself `0o700`).
+  the architect's `XDG_RUNTIME_DIR` (which is itself `0o700`).
 
 ### Implementation phases
 
@@ -716,7 +716,7 @@ that:
 
 1. Registers as a credentialsd provider over D-Bus.
 2. On `CreateCredential`: receives the rpId and PublicKeyCredentialCreationOptions,
-   asks the user (via rosec-prompt) which backend should host the new
+   asks the architect (via rosec-prompt) which backend should host the new
    passkey, generates a keypair inside `rosec-vault`, and returns the
    public key + credentialId.
 3. On `GetCredential`: receives the rpId and a list of allowed
@@ -732,7 +732,7 @@ that:
 credentialsd's browser web extension handles
 `navigator.credentials.*` interception, so no per-browser work is
 needed.  rosec just needs to ensure its prompt UI surfaces enough
-context (rpId, requesting app name) for the user to make a sensible
+context (rpId, requesting app name) for the architect to make a sensible
 allow/deny decision.
 
 ### What this is *not*
@@ -977,7 +977,7 @@ since busd and zbus are cross-platform.
 
 Enable all providers to benefit from key-wrapping without modifying each
 provider.  A daemon-level credential store wraps per-provider unlock
-passwords behind its own set of wrapping entries.  When the user types a
+passwords behind its own set of wrapping entries.  When the architect types a
 password during unlock, the daemon tries it against the store's wrapping
 entries; on match, stored provider passwords are auto-supplied — zero extra
 prompts.
@@ -1320,7 +1320,7 @@ rosec credential list-passwords              List store wrapping entries
 | Separate from LocalVault | Yes — independent store file | The repo owner flagged that storing credentials *in* another provider is "giving away your master password to a potentially less secure vault." The daemon credential store is owned by the daemon, not by any provider. |
 | Crypto | Same primitives as LocalVault | PBKDF2 + AES-256-CBC + HMAC-SHA256, with store-specific HKDF domain separation (`rosec-cred-store-mac-v1`). Proven pattern, no new dependencies. |
 | Config model | Opt-in, normal naming | `stored_credentials = true` per provider + `[credential_store] enabled = true` globally. Security warning shown at CLI store time. |
-| Stale password handling | Fall through to normal flow | If a stored password fails `AuthFailed`, the provider is left in the `locked` list for the normal prompt flow. No automatic deletion of stored credentials on failure (the user may have just changed their password externally). |
+| Stale password handling | Fall through to normal flow | If a stored password fails `AuthFailed`, the provider is left in the `locked` list for the normal prompt flow. No automatic deletion of stored credentials on failure (the architect may have just changed their password externally). |
 
 ### Interaction with existing systems
 

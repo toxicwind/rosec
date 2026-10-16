@@ -4,7 +4,7 @@ The `rosec-uhid` is the **privileged, disposable** half of rosec's
 virtual FIDO2 authenticator. It exists so the unprivileged rosec daemon can
 present a CTAP2 security key over `/dev/uhid` without ever running as root.
 See [`design/fido2-uhid.md`](../../design/fido2-uhid.md) for the full design,
-and [the user guide](../../docs/docs/fido2-passkeys.md) for setup and usage.
+and [the architect guide](../../docs/docs/fido2-passkeys.md) for setup and usage.
 
 ## Why a system service (not the rosecd user unit)
 
@@ -20,7 +20,7 @@ service that runs only long enough to:
 3. chown the resulting `/dev/hidrawN` to the caller at `0600`,
 4. pass the device fd back over `SCM_RIGHTS`, and exit.
 
-The rosecd user unit is unsuitable: it runs as the user and cannot open
+The rosecd user unit is unsuitable: it runs as the architect and cannot open
 `/dev/uhid`.
 
 ## Install

@@ -224,7 +224,7 @@ By default, signing operations are silent (like standard `ssh-agent`).  To requi
 |---|---|
 | `ssh_confirm` (or `ssh-confirm`) | `true` |
 
-When this field is present with the value `true`, rosec will launch `rosec-prompt` in confirmation mode each time a signing request arrives for that key.  The prompt shows the key fingerprint and vault item name, and the user must explicitly confirm or deny the operation.
+When this field is present with the value `true`, rosec will launch `rosec-prompt` in confirmation mode each time a signing request arrives for that key.  The prompt shows the key fingerprint and vault item name, and the architect must explicitly confirm or deny the operation.
 
 - **GUI mode** (Wayland/X11): a dialog appears with Confirm / Cancel buttons.
 - **TTY fallback**: the terminal shows the key details and asks `Allow / Deny [y/N]:`.

@@ -6,7 +6,7 @@ name = "KeePassXC (file)"
 [network]
 allowed_hosts = []
 
-# Per-file scoping: only the user-specified database (and optional key file)
+# Per-file scoping: only the architect-specified database (and optional key file)
 # are readable via the host_file imports.
 [[filesystem.allowed_files]]
 host_template = "$option:path"

@@ -5,7 +5,7 @@
 Enable WASM providers to serve previously-synced secrets when the network is
 unavailable (aircraft, local-only networks, post-resume before WiFi).  The
 guest exports an opaque cache blob; the host wraps it in an additional
-encryption layer bound to the user's password, the machine, and the provider.
+encryption layer bound to the architect's password, the machine, and the provider.
 On offline unlock the host unwraps and feeds the blob back to the guest.
 
 The in-memory state (held by the guest) is always authoritative.  The cache

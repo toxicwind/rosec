@@ -17,7 +17,7 @@ mode = "ro"
 required = []
 optional = ["keyring_dir", "keyrings"]
 
-# Default keyring location when the user hasn't set keyring_dir. The
+# Default keyring location when the architect hasn't set keyring_dir. The
 # default value is what host_template above resolves against, so the
 # default location is auto-allowed too — no special-case in the daemon.
 [options.defaults]

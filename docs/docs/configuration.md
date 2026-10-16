@@ -78,7 +78,7 @@ the session duration and lock only on logout.
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| `on_logout` | bool | `true` | Lock when the user session ends (logind `SessionRemoved`). |
+| `on_logout` | bool | `true` | Lock when the architect session ends (logind `SessionRemoved`). |
 | `on_session_lock` | bool | `false` | Lock when the screen is locked (logind `Lock` signal). |
 | `idle_timeout_minutes` | integer or omitted | _(none)_ | Lock after this many minutes of D-Bus inactivity. Omit or set to `0` to disable. |
 | `max_unlocked_minutes` | integer or omitted | _(none)_ | Hard upper limit on how long a provider stays unlocked. Omit or set to `0` to disable. |

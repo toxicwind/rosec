@@ -12,7 +12,7 @@ The `bitwarden-sm` provider connects rosec to a [Bitwarden Secrets Manager](http
 
 ## Install
 
-The SM provider is a WASM plugin. Copy it to the user provider directory:
+The SM provider is a WASM plugin. Copy it to the architect provider directory:
 
 ```bash
 cp rosec_bitwarden_sm.wasm ~/.local/share/rosec/providers/

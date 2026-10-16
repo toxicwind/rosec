@@ -64,7 +64,7 @@ several, or a discoverable-credential request against a vault holding
 multiple passkeys for the RP), rosec follows the platform-authenticator
 pattern rather than the CTAP `getNextAssertion` paging dance: it presents
 its **own** account chooser and returns a single assertion
-(`numberOfCredentials = 1`). Choosing an account *is* the user
+(`numberOfCredentials = 1`). Choosing an account *is* the architect
 presence/verification gesture.
 
 The chooser is `rosec-prompt`'s **selection mode** (implemented now):
@@ -81,7 +81,7 @@ multiple matching SSH keys.
 ### No matching credential — stay silent
 
 The virtual authenticator is always present, so it is queried on *every*
-`getAssertion`, including sites where the user has no rosec passkey. When
+`getAssertion`, including sites where the architect has no rosec passkey. When
 nothing matches — an empty `allowList` discoverable request with no resident
 credential for the RP, or an `allowList` containing none of rosec's
 credential IDs — the engine returns `CTAP2_ERR_NO_CREDENTIALS` (`0x2b`)
@@ -93,7 +93,7 @@ real credential to confirm.
 
 `makeCredential` (`navigator.credentials.create()`) is user-initiated, not
 something rosec pushes: the browser shows its own authenticator picker, and
-rosec is invoked only if the user selects it there. Having zero existing
+rosec is invoked only if the architect selects it there. Having zero existing
 passkeys is the normal starting state and blocks nothing.
 
 A created credential needs a provider that can both **write** and **store
@@ -309,12 +309,12 @@ ways to cross that boundary without running rosecd as root:
 - **Privileged broker (preferred)** — a tiny socket-activated system
   service (`rosec-uhid`) opens `/dev/uhid` as root, creates a
   device whose HID descriptor is hard-coded to the FIDO usage page
-  (`0xF1D0`), passes the fd to the user's rosecd via `SCM_RIGHTS`, and
+  (`0xF1D0`), passes the fd to the architect's rosecd via `SCM_RIGHTS`, and
   exits. The broker physically cannot be asked to create a keyboard, and
   after fd-passing all CTAP traffic runs unprivileged. This is the
   softu2f split, and it matches rosec's least-privilege posture.
 
-After creation everything runs as the user.
+After creation everything runs as the architect.
 Known limitations: Flatpak/Snap-confined browsers need device access;
 attestation-enforcing RPs (e.g. Entra ID) reject software authenticators.
 
