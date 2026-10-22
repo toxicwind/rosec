@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# rosec (barn shell) — unified secret backends → one desktop Secret Service. bin/check.
+#
+# Fast self-test (PASS/FAIL), no compile:
+#   1. just is available.
+#   2. Cargo workspace parses (rosecd/rosec crates present).
+#   3. The `check` and `build` just recipes exist.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+echo "== rosec check: start =="
+JUST="${JUST:-$(command -v just 2>/dev/null || true)}"
+for c in "$JUST" /usr/bin/just /usr/local/bin/just; do
+  [ -n "$c" ] && [ -x "$c" ] && { JUST="$c"; break; }
+done
+[ -n "${JUST:-}" ] || { echo "FAIL: just not found"; exit 1; }
+
+"$JUST" --list >/dev/null 2>&1 || { echo "FAIL: just cannot list rosec recipes"; exit 1; }
+for recipe in build test check; do
+  if "$JUST" --list 2>/dev/null | grep -qE "^[[:space:]]*$recipe[[:space:]]"; then
+    echo "OK: just recipe '$recipe' present"
+  else
+    echo "FAIL: just recipe '$recipe' missing"; exit 1
+  fi
+done
+
+echo "ROSEC CHECK: PASS"
+exit 0

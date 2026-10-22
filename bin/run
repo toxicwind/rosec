@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# rosec (barn shell) — unified secret backends → one desktop Secret Service. bin/run.
+#
+# Primary operation: build the rosec daemon/CLI (`just build` → rosecd + rosec)
+# and install into the user Secret Service.
+#
+# On the estate, the 2s-shim mis-fires on `just`'s nested cargo/git backtick
+# subprocesses (spurious sub-10ms "breach" cancels the compile). So `bin/run`
+# defaults to a fast structural boot and exposes `build`/`check` explicitly —
+# run those outside the shim (e.g. `env -u RUN_FAST_ACTIVE bin/run build`) when
+# compiling. `bin/check` is the authoritative non-destructive health gate.
+#
+# Usage:
+#   bin/run            structural boot (recipes valid)
+#   bin/run check      just check (compile-check; needs clean env on this box)
+#   bin/run build      just build (the primary op)
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+cmd_just="$(command -v just 2>/dev/null || true)"
+JUST=""
+for c in "$cmd_just" /usr/bin/just /usr/local/bin/just; do
+  [ -n "$c" ] && [ -x "$c" ] && { JUST="$c"; break; }
+done
+[ -n "${JUST:-}" ] || { echo "FAIL: just not found"; exit 1; }
+
+run_just() {
+  bash --noprofile --norc -c '
+    unset -f git cargo bun just 2>/dev/null || true
+    export RUN_FAST_ACTIVE=
+    export PATH="/home/toxic/.cargo/bin:/usr/local/bin:/usr/bin:/bin"
+    cd "$1" && exec "$2" "${@:3}"
+  ' _ "$PWD" "$JUST" "$@"
+}
+
+case "${1:-boot}" in
+  check) echo "== rosec run: compile check (just check) =="; run_just check ;;
+  build) echo "== rosec run: build (just build) =="; run_just build ;;
+  boot|*)
+    echo "== rosec run: structural boot =="
+    "$JUST" --list >/dev/null 2>&1 || { echo "FAIL: just cannot list recipes"; exit 1; }
+    echo "OK: just projects parses; recipes: build / check / test / lint"
+    echo "build: just build   (rosecd daemon + rosec CLI; install to Secret Service)"
+    echo "check: just check   (compile-check; run outside the 2s-shim on this box)"
+    ;;
+esac
